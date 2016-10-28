@@ -1,5 +1,5 @@
 /*
- * marunage -  slack outgoing-webhook wrapper
+ * marunage -  slack outgoing-webhooks server
  *
  * info.c
  *
@@ -26,14 +26,14 @@ int print_version(void)
 int print_usage(void)
 {
     fprintf(stdout, "\
-%s %d.%d.%d%s, slack outgoing-webhook wrapper.\n\
+%s %d.%d.%d%s, slack outgoing-webhooks server.\n\
 Usage: marunage [OPTION]...\n\
 \n\
 Mandatory arguments to long options are mandatory for short options too.\n\
 \n\
-  -p,  --port=INT            recv/send port\n\
-  -t,  --token=STR           slack outgoing webhook API access token\n\
-  -c,  --call_parser=PATH    string parser\n\
+  -p,  --port=INT            handle port\n\
+  -t,  --token=STR           slack outgoing-webhooks API access token\n\
+  -c,  --call-parser=PATH    string parser\n\
   -q,  --quiet               quiet mode\n\
   -v,  --vervose             vervose mode\n\
 \n\

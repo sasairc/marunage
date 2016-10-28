@@ -1,5 +1,5 @@
 /*
- * marunage -  slack outgoing-webhook wrapper
+ * marunage -  slack outgoing-webhooks server
  *
  * signal.h
  *
