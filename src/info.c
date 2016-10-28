@@ -17,9 +17,8 @@
 
 int print_version(void)
 {
-    fprintf(stdout, "%s %d.%d.%d%s\n",
-            PROGNAME, VERSION, PATCHLEVEL, SUBLEVEL, EXTRAVERSION);
-            //PROGNAME, VERSION, PATCHLEVEL, SUBLEVEL, EXTRAVERSION, ARCH);
+    fprintf(stdout, "%s %d.%d.%d%s (%s)\n",
+            PROGNAME, VERSION, PATCHLEVEL, SUBLEVEL, EXTRAVERSION, ARCH);
 
     exit(0);
 }

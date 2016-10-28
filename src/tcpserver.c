@@ -11,6 +11,7 @@
  */
 
 #include "./tcpserver.h"
+#include <stdio.h>
 #include <unistd.h>
 #include <string.h>
 #include <errno.h>
@@ -41,6 +42,7 @@ int open_tcp_server(tcp_server_info_t* server_info)
     if (bind(server_info->wait_socket,
             (struct sockaddr*)&server_info->server_addr,
             sizeof(server_info->server_addr)) < 0) {
+
         perror("bind");
 
         return -2;

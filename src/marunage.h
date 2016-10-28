@@ -13,8 +13,6 @@
 #ifndef MARUNAGE_H
 #define MARUNAGE_H
 
-#include "./tcpserver.h"
-
 #define MARUNAGE_ALLNO_FLAG \
     0, 0, 0, 0, 0, NULL, NULL
 
@@ -27,13 +25,6 @@ typedef struct {
     char*   targ;
     char*   carg;
 } marunage_t;
-
-extern int server_main_loop(marunage_t* conf);
-extern int get_slack_post(tcp_client_info_t* client, char** from_slack);
-extern int send_slack_post(tcp_client_info_t* client, char* to_slack);
-extern int exec_parser(char* parser, char* from_slack, char** to_slack);
-extern void cleaning_proc(void);
-extern void catch_signal(int sig);
 
 /* MARUNAGE_H */
 #endif
