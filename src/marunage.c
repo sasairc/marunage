@@ -73,9 +73,11 @@ int main(int argc, char* argv[])
         }
     }
 
+    /* setting handle port */
     if (conf.pflag == 0) {
         conf.parg = SERVER_PORT;
     }
+    /* setting parser */
     if (conf.cflag == 0) {
         fprintf(stderr, "%s: --call_parser is required option\n",
                 PROGNAME);
@@ -83,6 +85,7 @@ int main(int argc, char* argv[])
         return 2;
     }
 
+    /* setting signal */
     if (set_signal_siglist(siglist) != 0) {
         fprintf(stderr, "set_signal_siglist() failure\n");
 
@@ -90,6 +93,7 @@ int main(int argc, char* argv[])
     }
     handl_zombie_proc();
 
+    /* do marunage main loop() */
     if (server_main_loop(&conf) < 0)
         return 4;
 
