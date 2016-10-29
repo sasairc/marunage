@@ -14,15 +14,13 @@
 #define MARUNAGE_H
 
 #define MARUNAGE_ALLNO_FLAG \
-    0, 0, 0, 0, 0, NULL, NULL
+    0, 0, 0, 0, NULL
 
 typedef struct {
     short   pflag;
-    short   tflag;
     short   cflag;
     short   vflag;
     long    parg;
-    char*   targ;
     char*   carg;
 } marunage_t;
 

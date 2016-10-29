@@ -38,7 +38,6 @@ int main(int argc, char* argv[])
 
     struct  option opts[] = {
         {"port",        required_argument,  NULL, 'p'},
-        {"token",       required_argument,  NULL, 't'},
         {"call-parser", required_argument,  NULL, 'c'},
         {"quiet",       no_argument,        NULL, 'q'},
         {"vervose",     no_argument,        NULL, 'v'},
@@ -47,15 +46,11 @@ int main(int argc, char* argv[])
         {0, 0, 0, 0},
     };
 
-    while ((res = getopt_long(argc, argv, ":p:t:cqv", opts, &index)) != -1) {
+    while ((res = getopt_long(argc, argv, ":p:cqv", opts, &index)) != -1) {
         switch (res) {
             case    'p':
                 conf.parg = atol(optarg);
                 conf.pflag = 1;
-                break;
-            case    't':
-                conf.targ = optarg;
-                conf.tflag = 1;
                 break;
             case    'c':
                 conf.carg = optarg;
@@ -80,12 +75,6 @@ int main(int argc, char* argv[])
 
     if (conf.pflag == 0) {
         conf.parg = SERVER_PORT;
-    }
-    if (conf.tflag == 0) {
-        fprintf(stderr, "%s: --token is required option\n",
-                PROGNAME);
-
-        return 1;
     }
     if (conf.cflag == 0) {
         fprintf(stderr, "%s: --call_parser is required option\n",

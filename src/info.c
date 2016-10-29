@@ -32,7 +32,6 @@ Usage: marunage [OPTION]...\n\
 Mandatory arguments to long options are mandatory for short options too.\n\
 \n\
   -p,  --port=INT            handle port\n\
-  -t,  --token=STR           slack outgoing-webhooks API access token\n\
   -c,  --call-parser=PATH    string parser\n\
   -q,  --quiet               quiet mode\n\
   -v,  --vervose             vervose mode\n\
