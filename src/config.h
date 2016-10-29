@@ -15,9 +15,9 @@
 
 #define PROGNAME        "marunage"
 #define VERSION         0
-#define PATCHLEVEL      0
-#define SUBLEVEL        1
-#define EXTRAVERSION    "-alfa"
+#define PATCHLEVEL      1
+#define SUBLEVEL        0
+#define EXTRAVERSION    ""
 #define AUTHOR          "sasairc"
 #define MAIL_TO         "sasairc@ssiserver.moe.hm"
 
