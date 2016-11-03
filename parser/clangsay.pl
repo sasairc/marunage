@@ -26,7 +26,7 @@ sub main {
     $req{text} = uri_unescape($req{text});
     $req{text} =~ s/clangsay//g;
 
-    if ($req{text} =~ /(`|\$|\||&|;|>|<)/) {
+    if ($req{text} =~ /(`|\$|\||&|;|>|<|\*)/) {
         my $data = {
             token   => $req{token},
             text    => "@" . $req{user_name} . " システム関係を触っちゃだめ！",
