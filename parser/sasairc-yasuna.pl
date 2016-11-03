@@ -29,7 +29,7 @@ use JSON;
     sub revision {
         my $sha = decode_utf8(`git -C $FindBin::Bin rev-parse HEAD`);
         
-        $str = "slack_yasuna: $sha";
+        $str = "sasairc_yasuna(slack outgoing webhooks): $sha";
 
         return $str;
     }

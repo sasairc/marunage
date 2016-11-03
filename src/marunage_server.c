@@ -63,8 +63,12 @@ int server_main_loop(marunage_t* conf)
                         PROGNAME, ret);
 
                 exit(1);
-            }
+            /* User-Agent != slackbot */
+            } else if (ret == 1) {
+                close_tcp_client(&client);
 
+                exit(2);
+            }
             /* query parsing after getting json */
             if ((ret = exec_parser(conf->carg, from_slack, &to_slack)) < 0) {
                 fprintf(stderr, "%s: exec_parser() failure: %d\n",
@@ -75,7 +79,7 @@ int server_main_loop(marunage_t* conf)
                     from_slack = NULL;
                 }
 
-                exit(2);
+                exit(3);
             } else if (ret == 1) {
                 /* no sending */
                 if (from_slack != NULL) {
@@ -121,7 +125,7 @@ int get_slack_post(tcp_client_info_t* client, char** from_slack)
     int     x           = 0,
             c           = 0;
 
-    short   isbody      = 1;
+    short   isbody      = 2;
 
     char    tmp[1024]   = {'\0'},
         *   msg         = NULL,
@@ -131,20 +135,25 @@ int get_slack_post(tcp_client_info_t* client, char** from_slack)
             contlen     = 0;
 
     /*
-     * get Content-Length
+     * get HTTP header
      */
     memset(tmp, 0, sizeof(tmp));
-    while (recv(client->data_socket, &c, sizeof(char), 0) && isbody > 0) {
+    while (recv(client->data_socket, &c, sizeof(char), 0) && isbody > 0 && x < 1024) {
         switch (c) {
             case    '\n':
                 tmp[x] = '\0';
+                /* check Content-Length */
                 if ((tp = strstr(tmp, "Content-Length: ")) != NULL) {
-                    tp += 16;
-                    contlen = atoi(tp);
-                    isbody = 0;
-                } else {
-                    memset(tmp, 0, sizeof(tmp));
+                    contlen = atoi(tp + 16);
+                    isbody--;
+                /* check User-Agent */
+                } else if ((tp = strstr(tmp, "User-Agent: ")) != NULL) {
+                    if (memcmp(tp + 12, UA_SLACKBOT, strlen(UA_SLACKBOT)) == 0)
+                        isbody--;
+                    else
+                        return 1;
                 }
+                memset(tmp, '\0', sizeof(tmp));
                 x = 0;
                 break;
             default:
