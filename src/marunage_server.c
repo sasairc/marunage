@@ -171,7 +171,8 @@ int get_slack_post(tcp_client_info_t* client, char** from_slack)
     /*
      * get body
      */
-    if ((msg = (char*)malloc(sizeof(char) * contlen)) == NULL) {
+    if ((msg = (char*)
+                malloc(sizeof(char) * contlen)) == NULL) {
         fprintf(stderr, "%s, malloc() failue\n",
                 PROGNAME);
 
@@ -192,19 +193,36 @@ int get_slack_post(tcp_client_info_t* client, char** from_slack)
 
 int send_slack_post(tcp_client_info_t* client, char* to_slack)
 {
-    int     res = 0;
+    int     res     = 0,
+            maxfd   = 0;
+
+    fd_set  fds,
+            sendfds;
 
     size_t  bufsiz  = strlen(to_slack),
             sended  = 0;
 
+    FD_ZERO(&sendfds);
+    FD_SET(client->data_socket, &sendfds);
+    maxfd = client->data_socket;
+
     while (bufsiz > 0) {
         while (1) {
-            res = send(client->data_socket, to_slack + sended, bufsiz, MSG_DONTWAIT);
+            res = send(client->data_socket,
+                    to_slack + sended, bufsiz, MSG_DONTWAIT);
             if (errno != EINTR)
                 break;
         }
         if (res < 0) {
             if (errno == EAGAIN || errno == EWOULDBLOCK) {
+                while (res < 0) {
+                    /* retry, after send() */
+                    select(maxfd + 1, &fds, NULL, NULL, NULL);
+                    if (FD_ISSET(client->data_socket, &fds) > 0) {
+                        res = send(client->data_socket,
+                                to_slack + sended, bufsiz, MSG_DONTWAIT);
+                    }
+                }
             } else {
                 return -1;
             }
@@ -212,7 +230,6 @@ int send_slack_post(tcp_client_info_t* client, char* to_slack)
         bufsiz -= res;
         sended++;
     }
-//  send(client->data_socket, to_slack, strlen(to_slack), 0);
 
     return 0;
 }
@@ -252,7 +269,8 @@ int exec_parser(char* parser, char* from_slack, char** to_slack)
         exit(1);
     } else {
         close(fd[1]);
-        if ((buf = (char*)malloc(sizeof(char) * bufsiz)) == NULL) {
+        if ((buf = (char*)
+                    malloc(sizeof(char) * bufsiz)) == NULL) {
             fprintf(stderr, "%s: malloc() failure\n",
                     PROGNAME);
 
@@ -263,7 +281,8 @@ int exec_parser(char* parser, char* from_slack, char** to_slack)
         while (read(fd[0], buf + readsiz, 1) != 0) {
             if (readsiz == (bufsiz -1)) {
                 bufsiz += 1024;
-                if ((buf = (char*)realloc(buf, sizeof(char) * bufsiz)) == NULL) {
+                if ((buf = (char*)
+                            realloc(buf, sizeof(char) * bufsiz)) == NULL) {
                     fprintf(stderr, "%s:realloc() failure\n",
                             PROGNAME);
 
