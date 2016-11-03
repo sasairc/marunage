@@ -148,12 +148,10 @@ int get_slack_post(tcp_client_info_t* client, char** from_slack)
                     isbody--;
                 /* check User-Agent */
                 } else if ((tp = strstr(tmp, "User-Agent: ")) != NULL) {
-                    if (memcmp(tp + 12, UA_SLACKBOT, strlen(UA_SLACKBOT)) == 0) {
-                        fprintf(stdout, "is slackbot\n");
+                    if (memcmp(tp + 12, UA_SLACKBOT, strlen(UA_SLACKBOT)) == 0)
                         isbody--;
-                    } else {
+                    else
                         return 1;
-                    }
                 }
                 memset(tmp, '\0', sizeof(tmp));
                 x = 0;
