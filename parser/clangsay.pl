@@ -12,6 +12,29 @@ use JSON;
 use Encode;
 use URI::Escape;
 
+sub replace {
+    my $str = $_[0];
+    my @reg = (
+            '"', '\'', '`', '\$', '\|', '&', ';', '>', '<', '\*',
+            '\(', '\)', '=', '\?',
+    );
+    my @rep = (
+            '\"', '\\\'', '\`', '\$', '\|', '\&', '\;', '\>', '\<', '\*',
+            '\(', '\)', ' =', '\?',
+    );
+    $str =~ s/&amp;/&/g;
+    $str =~ s/&quot;/"/g;
+    $str =~ s/&lt;/</g;
+    $str =~ s/&gt;/>/g;
+    $str =~ s/<BR>/\n/g;
+
+    for (my $i = 0; $i < ($#reg + 1); $i++) {
+        $str =~ s/$reg[$i]/$rep[$i]/g;
+    }
+
+    return $str;
+}
+
 sub main {
     my $qstr = $ARGV[0];
     $qstr =~ tr/+/ /;
@@ -23,17 +46,13 @@ sub main {
         ($key, $val) = split(/=/, $_);
         $req{$key} = $val;
     }
-    $req{text} = uri_unescape($req{text});
-    $req{text} =~ s/clangsay//g;
+    $str = uri_unescape($req{text});
+    $str =~ s/clangsay//g;
+    $str = replace($str);
 
-    if ($req{text} =~ /(`|\$|\||&|;|>|<|\*)/) {
-        my $data = {
-            token   => $req{token},
-            text    => "@" . $req{user_name} . " システム関係を触っちゃだめ！",
-        };
-        print encode_json($data);
-    } elsif ($req{text} =~ /\S(.+)/) {
-        my @stream = decode_utf8(`clangsay $req{text} 2>&1`);
+    if ($str =~ /\S+/) {
+        my @stream = decode_utf8(`clangsay $str 2>&1`);
+        $str = "";
         foreach my $line (@stream) {
             $str = $str . $line;
         }
