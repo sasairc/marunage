@@ -4,6 +4,8 @@ use strict;
 use warnings;
 use utf8;
 
+use Encode;
+use URI::Escape;
 use FindBin;
 
 #
@@ -12,6 +14,7 @@ use FindBin;
 my %apps = (
     '^yasuna'   => 'sasairc-yasuna.pl',
     '^clangsay' => 'clangsay.pl',
+    '^はい$'  => 'hai.pl',
 );
 
 #
@@ -38,7 +41,7 @@ sub main {
 
     foreach (@query) {
         ($key, $val) = split(/=/, $_);
-        $req{$key} = $val;
+        $req{$key} = decode_utf8(uri_unescape($val));
     }
     if (($app = if_app($req{trigger_word})) eq "") {
         print "nosend";

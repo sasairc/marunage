@@ -60,7 +60,7 @@ use JSON;
     # decode n_cipher
     sub decode_n_cipher {
         ($str = $_[0]) =~ /decode\s/;
-        $str = uri_unescape($str);
+        $str = decode_utf8(uri_unescape($str));
         $str = decode_utf8(`n_cipher_decode "$'"`);
         if ($?) {
             $str = "暗号になってない！！";
