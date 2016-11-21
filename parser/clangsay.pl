@@ -47,7 +47,11 @@ sub main {
         $req{$key} = $val;
     }
     $str = uri_unescape($req{text});
-    $str =~ s/clangsay//g;
+    $str =~ s/(\s|　)*clangsay(\s|　)*//g;
+    if ($str eq "") {
+        print "nosend"
+        return 0;
+    }
     $str = replace($str);
 
     if ($str =~ /\S+/) {
