@@ -17,7 +17,7 @@
 #include "./tcpserver.h"
 
 extern int server_main_loop(marunage_t* conf);
-extern int get_slack_post(tcp_client_info_t* client, char** from_slack);
+extern int get_slack_post(marunage_t* conf, tcp_client_info_t* client, char** from_slack);
 extern int send_slack_post(tcp_client_info_t* client, char* to_slack);
 extern int exec_parser(char* parser, char* from_slack, char** to_slack);
 extern void cleaning_proc(void);

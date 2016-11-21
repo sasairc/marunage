@@ -14,6 +14,7 @@
 #include "./marunage.h"
 #include "./marunage_server.h"
 #include "./tcpserver.h"
+#include "./log.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -39,11 +40,6 @@ int server_main_loop(marunage_t* conf)
     tcp_client_info_t   client;
 
     init_tcp_server(&server, SERVER_IP, conf->parg);
-    if (conf->vflag == 1) {
-        fprintf(stdout, "%s: Initialize TCP-Server\nServer Port = %ld\n",
-                PROGNAME, conf->parg);
-    }
-
     if (open_tcp_server(&server) < 0)
         return -1;
 
@@ -58,7 +54,7 @@ int server_main_loop(marunage_t* conf)
             close_tcp_server(&server);
 
             /* get slack query string */
-            if ((ret = get_slack_post(&client, &from_slack)) < 0) {
+            if ((ret = get_slack_post(conf, &client, &from_slack)) < 0) {
                 fprintf(stderr, "%s: get_slack_post() failure: %d",
                         PROGNAME, ret);
 
@@ -120,7 +116,7 @@ int server_main_loop(marunage_t* conf)
     return 0;
 }
 
-int get_slack_post(tcp_client_info_t* client, char** from_slack)
+int get_slack_post(marunage_t* conf, tcp_client_info_t* client, char** from_slack)
 {
     int     x           = 0,
             c           = 0;
@@ -128,6 +124,7 @@ int get_slack_post(tcp_client_info_t* client, char** from_slack)
     short   isbody      = 2;
 
     char    tmp[1024]   = {'\0'},
+        *   ua          = NULL,
         *   msg         = NULL,
         *   tp          = NULL;
 
@@ -148,10 +145,15 @@ int get_slack_post(tcp_client_info_t* client, char** from_slack)
                     isbody--;
                 /* check User-Agent */
                 } else if ((tp = strstr(tmp, "User-Agent: ")) != NULL) {
-                    if (memcmp(tp + 12, UA_SLACKBOT, strlen(UA_SLACKBOT)) == 0)
+                    if (memcmp(tp + 12, UA_SLACKBOT, strlen(UA_SLACKBOT)) == 0) {
+                        if ((ua = (char*)malloc(strlen(UA_SLACKBOT) + 1)) != NULL) {
+                            memcpy(ua, tp + 12, strlen(UA_SLACKBOT));
+                            ua[strlen(UA_SLACKBOT)] = '\0';
+                        }
                         isbody--;
-                    else
+                    } else {
                         return 1;
+                    }
                 }
                 memset(tmp, '\0', sizeof(tmp));
                 x = 0;
@@ -194,6 +196,15 @@ int get_slack_post(tcp_client_info_t* client, char** from_slack)
         msg[recvied] = c;
         recvied++;
     } while (recvied < contlen);
+
+    if (conf->lflag == 1) {
+        write_log(conf, &client->client_addr, msg, ua);
+    }
+
+    if (ua != NULL) {
+        free(ua);
+        ua = NULL;
+    }
 
     *from_slack = msg;
 

@@ -1,7 +1,7 @@
 /*
  * marunage -  slack outgoing-webhooks server
  *
- * marunage.h
+ * log.h
  *
  * Copyright (c) 2016 sasairc
  * This work is free. You can redistribute it and/or modify it under the
@@ -10,21 +10,15 @@
  * for more details.
  */
 
-#ifndef MARUNAGE_H
-#define MARUNAGE_H
+#ifndef LOG_H
+#define LOG_H
 
-#define MARUNAGE_ALLNO_FLAG \
-    0, 0, 0, 1, 0, NULL, NULL
+#include "./marunage.h"
+#include <stdio.h>
+#include <netinet/in.h>
 
-typedef struct {
-    short   pflag;
-    short   cflag;
-    short   fflag;
-    short   lflag;
-    long    parg;
-    char*   carg;
-    char*   farg;
-} marunage_t;
+extern int check_logfile(FILE** dest, char* path, short chkonly);
+extern int write_log(marunage_t* conf, struct sockaddr_in* client, char* body, char* ua);
 
-/* MARUNAGE_H */
+/* LOG_H */
 #endif
