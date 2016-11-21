@@ -33,8 +33,9 @@ Mandatory arguments to long options are mandatory for short options too.\n\
 \n\
   -p,  --port=INT            handle port\n\
   -c,  --call-parser=PATH    string parser\n\
-  -q,  --quiet               quiet mode\n\
-  -v,  --vervose             vervose mode\n\
+  -f,  --logfile=PATH        manually specifies logfile\n\
+  -l,  --with-log            use logger\n\
+  -n,  --without-log         disuse logger\n\
 \n\
        --help                display this help and exit\n\
        --version             optput version infomation and exit\n\
