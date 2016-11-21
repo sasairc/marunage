@@ -36,8 +36,10 @@ sub replace {
 }
 
 sub main {
-    my $qstr = $ARGV[0];
-    $qstr =~ tr/+/ /;
+    my $timeout = 3;
+    my @stream  = "";
+    my $qstr    = $ARGV[0];
+    $qstr       =~ tr/+/ /;
     
     my @query = split(/&/, $qstr);
     my ($str, $key, $val, %req);
@@ -49,18 +51,29 @@ sub main {
     $str = uri_unescape($req{text});
     $str =~ s/(\s|　)*clangsay(\s|　)*//g;
     if ($str eq "") {
-        print "nosend"
+        print "nosend";
+
         return 0;
     }
     $str = replace($str);
 
     if ($str =~ /\S+/) {
-        my @stream = decode_utf8(`clangsay $str 2>&1`);
-        $str = "";
-        foreach my $line (@stream) {
-            $str = $str . $line;
-        }
+        eval {  
+            local $SIG{ALRM} = sub{die};
+            alarm($timeout);
+            @stream = decode_utf8(`clangsay $str 2>&1`);
+            alarm 0;
+        };
+        if ($@) {
+            print "nosend";
 
+            return 0;
+        } else {
+            $str = "";
+            foreach my $line (@stream) {
+                $str = $str . $line;
+            }
+        }
         my $data = {
             token   => $req{token},
             text    => '```' . "@" . $req{user_name} . "\n" .  $str . '```',
