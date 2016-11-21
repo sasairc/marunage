@@ -16,12 +16,13 @@
 #define PROGNAME        "marunage"
 #define VERSION         0
 #define PATCHLEVEL      1
-#define SUBLEVEL        2
-#define EXTRAVERSION    ""
+#define SUBLEVEL        3
+#define EXTRAVERSION    "-devel"
 #define AUTHOR          "sasairc"
 #define MAIL_TO         "sasairc@ssiserver.moe.hm"
 
 #define UA_SLACKBOT     "Slackbot 1.0 (+https://api.slack.com/robots)"
+#define DEFAULT_LOGFILE "/var/log/marunage/marunage.log"
 
 #define SERVER_PORT     8880
 
