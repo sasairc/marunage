@@ -15,6 +15,7 @@
 #include "./marunage_server.h"
 #include "./tcpserver.h"
 #include "./signal.h"
+#include "./log.h"
 #include "./info.h"
 #include <stdio.h>
 #include <stdlib.h>
@@ -39,14 +40,15 @@ int main(int argc, char* argv[])
     struct  option opts[] = {
         {"port",        required_argument,  NULL, 'p'},
         {"call-parser", required_argument,  NULL, 'c'},
-        {"quiet",       no_argument,        NULL, 'q'},
-        {"vervose",     no_argument,        NULL, 'v'},
+        {"logfile",     required_argument,  NULL, 'f'},
+        {"with-log",    no_argument,        NULL, 'l'},
+        {"without-log", no_argument,        NULL, 'n'},
         {"help",        no_argument,        NULL,  0 },
         {"version",     no_argument,        NULL,  1 },
         {0, 0, 0, 0},
     };
 
-    while ((res = getopt_long(argc, argv, ":p:cqv", opts, &index)) != -1) {
+    while ((res = getopt_long(argc, argv, "p:c:f:ln", opts, &index)) != -1) {
         switch (res) {
             case    'p':
                 conf.parg = atol(optarg);
@@ -56,11 +58,15 @@ int main(int argc, char* argv[])
                 conf.carg = optarg;
                 conf.cflag = 1;
                 break;
-            case    'q':
-                conf.vflag = 0;
+            case    'f':
+                conf.farg = optarg;
+                conf.fflag = 1;
                 break;
-            case    'v':
-                conf.vflag = 1;
+            case    'l':
+                conf.lflag = 1;
+                break;
+            case    'n':
+                conf.lflag = 0;
                 break;
             case    0:
                 print_usage();
@@ -77,6 +83,7 @@ int main(int argc, char* argv[])
     if (conf.pflag == 0) {
         conf.parg = SERVER_PORT;
     }
+
     /* setting parser */
     if (conf.cflag == 0) {
         fprintf(stderr, "%s: --call_parser is required option\n",
@@ -85,11 +92,19 @@ int main(int argc, char* argv[])
         return 2;
     }
 
+    /* setting logfile */
+    if (conf.lflag == 1) {
+        if (conf.fflag == 0)
+            conf.farg = DEFAULT_LOGFILE;
+        if (check_logfile(NULL, conf.farg, 1) < 0)
+            return 3;
+    }
+
     /* setting signal */
     if (set_signal_siglist(siglist) != 0) {
         fprintf(stderr, "set_signal_siglist() failure\n");
 
-        return 3;
+        return 4;
     }
     handl_zombie_proc();
 
