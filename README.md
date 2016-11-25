@@ -1,6 +1,9 @@
 marunage
 ===
 
+[![version](http://img.shields.io/github/tag/sasairc/marunage.svg?style=flat&label=version)](https://github.com/sasairc/marunage/releases)
+[![license](https://img.shields.io/badge/License-WTFPL2-blue.svg?style=flat)](http://www.wtfpl.net/txt/copying/)
+
 Slack Outgoing Webhooksの処理言語非依存なサーバのようなもの。
 
 ## Install
