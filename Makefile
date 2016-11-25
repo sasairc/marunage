@@ -7,6 +7,7 @@ PREFIX	:= /usr/local
 BINDIR	:= $(PREFIX)/bin
 PSRDIR	:= $(PREFIX)/share/marunage/parser
 LOGDIR	:= /var/log/marunage
+LOGPARM	:= 755
 MAKE	:= make
 CC	:= cc
 RM	:= rm
@@ -22,7 +23,7 @@ install-parser:
 	@$(MAKE) -C ./parser	$@
 
 make-logdir:
-	install -pd $(LOGDIR)
+	install -pdm $(LOGPARM) $(LOGDIR)
 	touch $(LOGDIR)/marunage.log
 
 install: install-bin install-parser make-logdir
