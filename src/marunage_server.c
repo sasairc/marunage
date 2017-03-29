@@ -29,7 +29,8 @@ short   do_loop = 1;
 
 int server_main_loop(marunage_t* conf)
 {
-    int                 ret         = 0;
+    int                 status      = 0,
+                        ret         = 0;
 
     char*               from_slack  = NULL,
         *               to_slack    = NULL;
@@ -108,6 +109,8 @@ int server_main_loop(marunage_t* conf)
             }
 
             exit(0);
+        } else {
+            wait(&status);
         }
     }
     close_tcp_server(&server);
